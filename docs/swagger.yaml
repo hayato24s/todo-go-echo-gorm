@@ -1,0 +1,316 @@
+definitions:
+  auth.LogInBody:
+    properties:
+      name:
+        example: gopher
+        type: string
+      password:
+        example: password
+        maxLength: 20
+        minLength: 8
+        type: string
+    type: object
+  auth.LogInRes:
+    type: object
+  auth.LogOutRes:
+    type: object
+  common.ErrorRes:
+    properties:
+      message:
+        type: string
+    type: object
+  tasks.CreateBody:
+    properties:
+      title:
+        example: read documentation
+        type: string
+    required:
+    - title
+    type: object
+  tasks.CreateRes:
+    properties:
+      completed:
+        example: false
+        type: boolean
+      created_at:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      id:
+        example: de0bf6f0-a09a-4e0d-aaa4-b1bf4d953d1e
+        type: string
+      title:
+        example: read documentation
+        type: string
+    type: object
+  tasks.DeleteRes:
+    type: object
+  tasks.IndexRes:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/tasks.TaskRes'
+        type: array
+      total:
+        example: 10
+        type: integer
+    type: object
+  tasks.TaskRes:
+    properties:
+      completed:
+        example: false
+        type: boolean
+      created_at:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      id:
+        example: de0bf6f0-a09a-4e0d-aaa4-b1bf4d953d1e
+        type: string
+      title:
+        example: read documentation
+        type: string
+    type: object
+  tasks.UpdateBody:
+    properties:
+      completed:
+        example: false
+        type: boolean
+        x-nullable: true
+      title:
+        example: read documentation
+        type: string
+        x-nullable: true
+    type: object
+  tasks.UpdateRes:
+    type: object
+  users.CreateBody:
+    properties:
+      name:
+        example: gopher
+        type: string
+      password:
+        example: password
+        maxLength: 20
+        minLength: 8
+        type: string
+    type: object
+  users.CreateRes:
+    type: object
+  users.DeleteRes:
+    type: object
+info:
+  contact: {}
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LogInBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.LogInRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - login
+  /logout:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.LogOutRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - logout
+  /tasks:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.IndexRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.CreateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.CreateRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.DeleteRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request body
+        in: body
+        name: in
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.UpdateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.UpdateRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - tasks
+  /users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/users.CreateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.CreateRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - users
+  /users/me:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.DeleteRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorRes'
+      tags:
+      - users
+swagger: "2.0"

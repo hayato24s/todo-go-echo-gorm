@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    command: sleep infinity
+    container_name: todo-app
+    env_file:
+      - .env
+    volumes:
+      - .:/go/src
+    ports:
+      - 1323:1323
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:15
+    container_name: todo-postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: todo
+    ports:
+      - 5432:5432
